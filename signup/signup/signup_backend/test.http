@@ -1,0 +1,7 @@
+POST 
+Content-Type:application/json
+
+{
+    "fullname":"Joseph",
+    "username"
+}

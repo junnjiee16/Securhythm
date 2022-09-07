@@ -78,9 +78,9 @@ function App() {
   return (
     <div className="App">
     {/* <Stopwatch/> */}
-    <button onClick={startTimer}>Start</button>
+    {/* <button onClick={startTimer}>Start</button>
     <button onClick={stopTimer}>Stop</button>
-    <p>{seconds}</p>
+    <p>{seconds}</p> */}
     <form>
       <label>Username:</label> <br />
       <input
