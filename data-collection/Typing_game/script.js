@@ -60,15 +60,4 @@ function getTimerTime() {
 
 renderNewQuote()
 
-function 
-
-var startTime = performance.now();
-
-alert('Run some function here');
-
-var endTime = performance.now();
-var totalTime=endTime-startTime;// time took to run in milliseconds
-
-alert('Total time:'+totalTime +'ms');
-
 
