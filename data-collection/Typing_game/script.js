@@ -33,7 +33,7 @@ function getRandomQuote() {
     .then(data => data.content)
 }
 
-async function renderNewQuote() {
+async function renderNewQuote() { 
   const quote = await getRandomQuote()
   quoteDisplayElement.innerHTML = ''
   quote.split('').forEach(character => {
@@ -59,5 +59,4 @@ function getTimerTime() {
 }
 
 renderNewQuote()
-
 
