@@ -16,7 +16,20 @@ router.post("/signup", (request, response) => {
       response.json(data);
     })
     .catch((error) => {
-      response.json(error);
+      response.json({status: "error", error: 'Duplicate email'});
     });
 });
+
+
+router.post('/api/login', async (req, res) => {
+  const user = await User.findOne({ 
+  email: req.body.email,
+  password:req.body.password, })
+  if (user){
+    return res.json({ status:'ok',user:true})
+  }
+  res.json({ status:'ok'})
+})
+
+    
 module.exports = router;

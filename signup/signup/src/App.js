@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
+import axios from "axios";
 
 class App extends Component {
   constructor() {
@@ -12,7 +13,7 @@ class App extends Component {
     this.changeEmail = this.changeEmail.bind(this);
     this.changeUsername = this.changeUsername.bind(this);
     this.changePassword = this.changePassword.bind(this);
-
+    this.onSubmit = this.onSubmit.bind(this);
   }
 
   changeEmail(event){
@@ -35,8 +36,25 @@ class App extends Component {
 
 
     onSubmit(event){
-        event.preventDefault();        
+        event.preventDefault()
+
+        const registered ={
+          email : this.state.email,
+          username : this.state.username,
+          password : this.state.password
+        }   
+        axios.post('http://localhost:4000/app/signup', registered)
+        .then(response => console.log(response.data))
+
+        // window.location ='/login'
+        this.setState({
+            email: "",
+            username: "",
+            password: ""
+        })
+
     }
+    
   render() {
     return (
       <div>
