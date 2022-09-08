@@ -4,44 +4,42 @@ import { useState } from "react";
 
 function Login() {
   const [email, setEmail] = useState("");
-  const [username, setUsername] = useState("");
+  // const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  async function registerUser(event){
+  async function loginUser(event){
     event.preventDefault();
 
-    const response = await fetch("http://localhost:4000/api/register", {
+    const response = await fetch("http://localhost:4000/api/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
         email,
-        username,
         password
       })
     })
     const data = await response.json();
-    console.log(data);
 
+    if (data.user){
+        localStorage.setItem("token", data.token)
+        alert("Login Successful");
+        window.location.href = "/quote";
+    }else{
+        alert("Login Failed");
+    }
   }
 
   return (
     <>
-      <h1>Register</h1>
-      <form onSubmit={registerUser}>
+      <h1>Login</h1>
+      <form onSubmit={loginUser}>
         <input
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           type="text"
           placeholder="Email"
-        />
-        <br />
-        <input
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          type="text"
-          placeholder="Username"
         />
         <br />
 
@@ -52,7 +50,7 @@ function Login() {
           placeholder="Password"
         />
         <br />
-        <button type="submit">Register</button>
+        <button type="submit">Login</button>
 
       </form>
     </>
