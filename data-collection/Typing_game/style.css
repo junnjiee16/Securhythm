@@ -182,3 +182,7 @@ li:not(:first-child) span{
     margin-top: 10px;
   }
 }
+
+.d-none{
+  display: none !important;
+}
