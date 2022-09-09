@@ -1,11 +1,12 @@
 import React from "react";
 import { useState } from "react";
-
+import { useNavigate } from "react-router-dom";
 
 function Login() {
   const [email, setEmail] = useState("");
   // const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   async function loginUser(event){
     event.preventDefault();
@@ -25,7 +26,9 @@ function Login() {
     if (data.user){
         localStorage.setItem("token", data.token)
         alert("Login Successful");
-        window.location.href = "/quote";
+        console.log(data)
+        // window.location.href = "/dashboard";
+        navigate("/dashboard");
     }else{
         alert("Login Failed");
     }

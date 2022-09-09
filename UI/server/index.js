@@ -44,34 +44,59 @@ app.post("/api/login", async (req, res) => {
         email: user.email,
         password: user.password,
       }, process.env.JWT_SECRET, { expiresIn: "1h" })
-      return res.json({ status: "ok", user:true })
+      console.log(token)
+      return res.json({ status: "ok", user:true , token });
     }else{
       return res.json({status: "error" ,user:false});
     }
 
 });
 
-app.get("/api/quote", async (req, res) => {
+app.get("/api/login", async (req, res) => {
+
+  const token = req.headers['x-access-token'];
+try{
+  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  const email = decoded.email;
+  const user = await User.findOne({email: email})
+  return {status: "ok", quote: user.quote}
+}
+catch(err){
+  console.log(err)
+  res.json({status:'error',error:'invalid email'})
+}
+
+});
+
+
+app.get("/api/dashboard", async (req, res) => {
   const token = req.headers["x-access-token"];
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const email = decoded.email;
     const user = await User.findOne({ email: email });
-    return { status: "ok", quote: user.quote };
+    res.json({ status: "ok", quote: user.quote });
   } catch (error) {
     console.log(error);
     res.json({ status: "error", error });
   }
 });
 
-app.post("/api/quote", async (req, res) => {
+app.post("/api/dashboard", async (req, res) => {
   const token = req.headers["x-access-token"];
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const email = decoded.email;
     const user = await User.updateOne(
-      { email: email },
-      { $set: { quote: req.body.quote } }
+{
+  email: email,
+},
+{
+  quote: req.body.quote,
+}
+
+      // { email: email },
+      // { $set: { quote: req.body.quote } }
     );
     return { status: "ok", quote: user.quote };
   } catch (error) {
@@ -80,10 +105,6 @@ app.post("/api/quote", async (req, res) => {
   }
 });
 
-app.get("/hello", (req, res) => {
-  ``;
-  res.send("Hello World!");
-});
 
 app.listen(4000, () => {
   console.log("Example app listening on port 4000!");
