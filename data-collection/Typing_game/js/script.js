@@ -108,7 +108,7 @@ function duration(timestamps) {
   // Not perfect, but quickest to understand and build upon:
 // Original https://www.sitepoint.com/community/t/javascript-how-to-make-laps-in-the-stopwatch/244936/2
 
-
+    var interval = [];
     var hours = 00;
     var minutes = 00;
     var seconds = 00;
@@ -244,8 +244,9 @@ function duration(timestamps) {
           seconds: seconds,
           minutes: minutes,
           hours: hours
-        };
-  
+        }
+
+        console.log(interval)
         Laps.innerHTML +=
           "<li>" +
           leftPad(lapHours) +
@@ -257,6 +258,7 @@ function duration(timestamps) {
           leftPad(lapTens) +
           "</li>";
       };
+      
       // Just clear laps list
       clear.onclick = function() {
         Laps.innerHTML = '';
@@ -285,7 +287,15 @@ function duration(timestamps) {
             minutes: minutes,
             hours: hours
           };
-  
+          
+          interval.push([leftPad(lapHours) +
+          ":" +
+          leftPad(lapMinutes) +
+          ":" +
+          leftPad(lapSeconds) +
+          "." +
+          leftPad(lapTens)])
+          console.log(interval)
           Laps.innerHTML +=
             "<li>" +
             "Lap " + lapCount++ + " – " +
@@ -327,7 +337,7 @@ function duration(timestamps) {
 
 
   var durations = [];
-  var timestamps = [];
+  var key_hold_duration = []
   var words = [];
   //upon keypress start timer
   $(document).keypress(function(e) { Start.click(); });
@@ -345,14 +355,14 @@ function duration(timestamps) {
     // find the interval between each press, current time - last key press time
     var time_interval = (duration(current)) 
 
-    timestamps.push(time_interval);
     words.push(e.keyCode)
-    console.log(time_interval)
-    console.log([
-        ['Key code:', e.keyCode].join(' '),
-        ['Key hold length:', display(timeElapsed)].join(' '),
-        ['Interval between each key press:', ].join(' ')
-    ].join(' --- '));
+    key_hold_duration.push(display(timeElapsed))
+    console.log(words)
+    console.log(key_hold_duration)
+    // console.log([
+    //     ['Key code:', e.keyCode].join(' '),
+    //     ['Key hold length:', display(timeElapsed)].join(' ')
+    // ].join(' --- '));
     
   });
 
