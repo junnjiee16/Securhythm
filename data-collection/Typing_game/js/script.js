@@ -10,7 +10,10 @@ let timer,
 maxTime = 200,
 timeLeft = maxTime,
 charIndex = mistakes = isTyping = 0;
-
+interval = []
+var durations = [];
+var key_hold_duration = []
+var words = [];
 function loadParagraph() {
     const ranIndex = Math.floor(Math.random() * paragraphs.length);
     typingText.innerHTML = "";
@@ -149,164 +152,40 @@ function duration(timestamps) {
   // Not perfect, but quickest to understand and build upon:
 // Original https://www.sitepoint.com/community/t/javascript-how-to-make-laps-in-the-stopwatch/244936/2
 
-    var interval = [];
-    var hours = 00;
-    var minutes = 00;
-    var seconds = 00;
-    var tens = 00;
-    var aHours = document.getElementById("hours");
-    var aMinutes = document.getElementById("minutes");
-    var aSeconds = document.getElementById("seconds");
-    var aTens = document.getElementById("tens");
-    var Start = document.getElementById("start");
-    var Stop = document.getElementById("stop");
-    var reset = document.getElementById("reset");
-    var clear = document.getElementById("clear");
-    var Interval;
-    var Lap = document.getElementById("lap");
-    var Laps = document.getElementById("laps");
-    var lapCount = 1;
-    var lastLap = { hours: 0, minutes: 0, tens: 0, seconds: 0 };
-  
-    function leftPad(value) {
-      return value < 10 ? "0" + value : value;
-    }
-    
-    // localStorage detection
-    function supportsLocalStorage() {
-      return typeof(Storage)!== 'undefined';
-    }
-    
-    $('#stop').hide();
-  
-    Start.onclick = function() {
-      clearInterval(Interval);
-      Interval = setInterval(startTimer, 10);
-      $('#stop').toggle();
-      $('#start').toggle();
-    };
-  
-    Stop.onclick = function() {
-      clearInterval(Interval);
-      $('#start').toggle();
-      $('#stop').toggle();
-    };
-  
-    reset.onclick = function() {
-      clearInterval(Interval);
-      hours = "00";
-      minutes = "00";
-      seconds = "00";
-      tens = "00";
-      aHours.innerHTML = hours;
-      aMinutes.innerHTML = minutes;
-      aSeconds.innerHTML = seconds;
-      aTens.innerHTML = tens;
-    };
+var last;
+var output = $('#output');
+$('#in').on('input', function() {
+    var n = new Date()
+    output.text((last - n) + ' ms')
+    value = last-n
+    last = n
+    interval.push((value))
+});
 
-    
-    function startTimer() {
-      tens++;
-    }   
-    // Run the support check
-    if (!supportsLocalStorage()) {
-      console.log('browser storage not supported')
-      
-      Lap.onclick = function() {
-        var lapTens = tens - lastLap.tens;
-        if (lapTens < 0) {
-          var lapTens = tens - lastLap.tens + 100;
-        }
-        lastLap = {
-          tens: tens
-        }
-
-        console.log(interval)
-        Laps.innerHTML +=
-          "<li>" +
-          leftPad(lapTens) +
-          "</li>";
-      }
-      
-      // Just clear laps list
-      clear.onclick = function() {
-        Laps.innerHTML = '';
-      }
-    } else {
-  
-      // HTML5 localStorage Support
-      try {
-        Lap.onclick = function() {
-          var lapTens = tens - lastLap.tens;
-          if (lapTens < 0) {
-            var lapTens = tens - lastLap.tens + 100;
-          }
-          lastLap = {
-            tens: tens
-          };
-          
-          interval.push([
-          leftPad(lapTens)])
-          
-          Laps.innerHTML +=
-            "<li>" +
-            leftPad(lapTens) +
-            "</li>";
-          
-          localStorage.setItem('laps', JSON.stringify(Laps.innerHTML));
-          // console.log(localStorage.getItem('laps'));
-        };
-  
-        clear.onclick = function() {
-          Laps.innerHTML = '';
-          localStorage.removeItem('laps');
-        }
-      }
-      
-      catch (e) {
-      
-        // If any errors, catch and alert the user
-        if (e == QUOTA_EXCEEDED_ERR) {
-          alert('Quota exceeded!');
-        }
-      }
-    
-      if (localStorage.getItem('laps')) {
-      
-        // Retrieve the item
-        var storedLaps = JSON.parse(localStorage.getItem('laps'));
-        $('#laps').html(storedLaps);
-        // console.log(localStorage.getItem('laps'));
-      }
-    }
-
-
-  var durations = [];
-  var key_hold_duration = []
-  var words = [];
-  //upon keypress start timer
-  $(document).keypress(function(e) { Start.click(); });
-  $(document).keypress(function(e) { Lap.click(); });
+  //upon keypress start time
   $('#in').keydown(function (e) {               
     //Second iteration keypress event
+    
     durations.push($.now());
   }).keyup(function (e) {
-    var current = durations;
-    current.push($.now());
-    durations = [];
-    var timeElapsed = current[current.length - 1] - current[0];
-    console.log(words)
-    console.log(key_hold_duration)
-    console.log(interval)
-    // find the interval between each press, current time - last key press time
-    var time_interval = (duration(current)) 
-    if(e.keyCode==8 || e.keyCode==16){
-        console.log("backspace/shift")
+    if (e.keyCode == 16 || e.keyCode==20){
+        console.log("Irregal")
     }
     else{
         words.push(e.keyCode)
-        key_hold_duration.push(display(timeElapsed))
+        var current = durations;
+        current.push($.now());
+        durations = [];
+        var timeElapsed = current[current.length - 1] - current[0];
+        console.log(words)
+        
+        // find the interval between each press, current time - last key press time
+        key_hold_duration.push(display(timeElapsed))    
+        console.log(key_hold_duration)
+        console.log(interval)
     }
+
+
     // console.log([
     //     ['Key code:', e.keyCode].join(' '),
     //     ['Key hold length:', display(timeElapsed)].join(' ')
@@ -314,8 +193,5 @@ function duration(timestamps) {
     
   });
 
-  function lap() {
-    lapNow = `<div class="lap">${hours} : ${minutes} : ${seconds} : ${miliseconds}</div>`;
-    words.innerHTML += lapNow;
-  }
+
   
