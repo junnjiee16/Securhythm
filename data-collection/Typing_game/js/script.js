@@ -194,9 +194,7 @@ function duration(timestamps) {
   
     reset.onclick = function() {
       clearInterval(Interval);
-      hours = "00";
-      minutes = "00";
-      seconds = "00";
+
       tens = "00";
       aHours.innerHTML = hours;
       aMinutes.innerHTML = minutes;
