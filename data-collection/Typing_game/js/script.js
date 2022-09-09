@@ -7,7 +7,7 @@ wpmTag = document.querySelector(".wpm span"),
 cpmTag = document.querySelector(".cpm span");
 window.onload = window.localStorage.clear();
 let timer,
-maxTime = 60,
+maxTime = 200,
 timeLeft = maxTime,
 charIndex = mistakes = isTyping = 0;
 
@@ -60,6 +60,47 @@ function initTyping() {
     } else {
         clearInterval(timer);
         inpField.value = "";
+        console.log("Finished")
+        console.log(words)
+        console.log(key_hold_duration)
+        console.log(interval)
+        //make csv using arrays
+
+        function toCsvRows(headers, columns) {
+            const output = [headers]
+            const numRows = columns.map(col => col.length)
+              .reduce((a, b) => Math.max(a, b))
+          
+            for (let row = 0; row < numRows; row++) {
+              output.push(columns.map(c => c[row] || ''))
+            }
+          
+            return output
+          }
+          
+          function toCsvString(data) {
+            let output = ''
+            data.forEach(row => output += row.join(',') + '\n')
+            return output
+          }
+          
+          function csvConstructor(headers, columns) {
+            return toCsvString(toCsvRows(headers, columns))
+          }
+
+
+            const headers = ['words', 'key_hold_duration', 'interval']
+            const columns = [words, key_hold_duration, interval]
+            const csv = csvConstructor(headers, columns)
+            console.log(csv)
+            //save csv as file using file saver
+            a=document.createElement('a');
+            a.textContent='download';
+            a.download="myFileName.csv";
+            a.href='data:text/csv;charset=utf-8,'+escape(csv);
+            document.body.appendChild(a);
+
+
     }   
 }
 
@@ -165,99 +206,27 @@ function duration(timestamps) {
 
     
     function startTimer() {
-      
       tens++;
-  
-      if (tens < 9) {
-        aTens.innerHTML = "0" + tens;
-      }
-  
-      if (tens > 9) {
-        aTens.innerHTML = tens;
-      }
-  
-      if (tens > 99) {
-        // console.log("seconds");
-        seconds++;
-        aSeconds.innerHTML = "0" + seconds;
-        tens = 0;
-        aTens.innerHTML = "0" + 0;
-      }
-  
-      if (seconds > 9) {
-        aSeconds.innerHTML = seconds;
-      }
-  
-      if (seconds > 59) {
-        // console.log("minutes");
-        minutes++;
-        aMinutes.innerHTML = "0" + minutes;
-        seconds = 0;
-        aSeconds.innerHTML = "0" + 0;
-        tens = 0;
-        aTens.innerHTML = "0" + 0;
-      }
-  
-      if (minutes > 9) {
-        aMinutes.innerHTML = minutes;
-      }
-  
-      if (minutes > 59) {
-        // console.log("seconds");
-        hours++;
-        aHours.innerHTML = "0" + hours;
-        minutes = 0;
-        aMinutes.innerHTML = "0" + 0;
-        seconds = 0;
-        aSeconds.innerHTML = "0" + 0;
-        tens = 0;
-        aTens.innerHTML = "0" + 0;
-      }
-  
-      if (hours > 9) {
-        aHours.innerHTML = hours;
-      }
-    }
-    
-    
-  
+    }   
     // Run the support check
     if (!supportsLocalStorage()) {
       console.log('browser storage not supported')
       
       Lap.onclick = function() {
-        var lapHours = hours - lastLap.hours;
-        var lapMinutes = minutes - lastLap.minutes;
-        if (lapMinutes < 0) {
-          var lapMinutes = minutes - lastLap.minutes + 60;
-        }
-        var lapSeconds = seconds - lastLap.seconds;
-        if (lapSeconds < 0) {
-          var lapSeconds = seconds - lastLap.seconds + 60;
-        }
         var lapTens = tens - lastLap.tens;
         if (lapTens < 0) {
           var lapTens = tens - lastLap.tens + 100;
         }
         lastLap = {
-          tens: tens,
-          seconds: seconds,
-          minutes: minutes,
-          hours: hours
+          tens: tens
         }
 
         console.log(interval)
         Laps.innerHTML +=
           "<li>" +
-          leftPad(lapHours) +
-          ":" +
-          leftPad(lapMinutes) +
-          ":" +
-          leftPad(lapSeconds) +
-          ":" +
           leftPad(lapTens) +
           "</li>";
-      };
+      }
       
       // Just clear laps list
       clear.onclick = function() {
@@ -268,43 +237,19 @@ function duration(timestamps) {
       // HTML5 localStorage Support
       try {
         Lap.onclick = function() {
-          var lapHours = hours - lastLap.hours;
-          var lapMinutes = minutes - lastLap.minutes;
-          if (lapMinutes < 0) {
-            var lapMinutes = minutes - lastLap.minutes + 60;
-          }
-          var lapSeconds = seconds - lastLap.seconds;
-          if (lapSeconds < 0) {
-            var lapSeconds = seconds - lastLap.seconds + 60;
-          }
           var lapTens = tens - lastLap.tens;
           if (lapTens < 0) {
             var lapTens = tens - lastLap.tens + 100;
           }
           lastLap = {
-            tens: tens,
-            seconds: seconds,
-            minutes: minutes,
-            hours: hours
+            tens: tens
           };
           
-          interval.push([leftPad(lapHours) +
-          ":" +
-          leftPad(lapMinutes) +
-          ":" +
-          leftPad(lapSeconds) +
-          "." +
+          interval.push([
           leftPad(lapTens)])
-          console.log(interval)
+          
           Laps.innerHTML +=
             "<li>" +
-            "Lap " + lapCount++ + " – " +
-            leftPad(lapHours) +
-            ":" +
-            leftPad(lapMinutes) +
-            ":" +
-            leftPad(lapSeconds) +
-            "." +
             leftPad(lapTens) +
             "</li>";
           
@@ -342,23 +287,26 @@ function duration(timestamps) {
   //upon keypress start timer
   $(document).keypress(function(e) { Start.click(); });
   $(document).keypress(function(e) { Lap.click(); });
-  $('#in').keydown(function (e) {
+  $('#in').keydown(function (e) {               
     //Second iteration keypress event
-    
     durations.push($.now());
   }).keyup(function (e) {
     var current = durations;
     current.push($.now());
     durations = [];
     var timeElapsed = current[current.length - 1] - current[0];
-
-    // find the interval between each press, current time - last key press time
-    var time_interval = (duration(current)) 
-
-    words.push(e.keyCode)
-    key_hold_duration.push(display(timeElapsed))
     console.log(words)
     console.log(key_hold_duration)
+    console.log(interval)
+    // find the interval between each press, current time - last key press time
+    var time_interval = (duration(current)) 
+    if(e.keyCode==8 || e.keyCode==16){
+        console.log("backspace/shift")
+    }
+    else{
+        words.push(e.keyCode)
+        key_hold_duration.push(display(timeElapsed))
+    }
     // console.log([
     //     ['Key code:', e.keyCode].join(' '),
     //     ['Key hold length:', display(timeElapsed)].join(' ')
