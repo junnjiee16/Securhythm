@@ -101,10 +101,14 @@ function initTyping() {
             a.textContent='download';
             a.download="myFileName.csv";
             a.href='data:text/csv;charset=utf-8,'+escape(csv);
-            document.body.appendChild(a);
 
+            //download csv file
+            a.click();
+            //stop user from typing
+            inpField.disabled = true;
+            tryAgainBtn.style.display = "block";
 
-    }   
+        }
 }
 
 function initTimer() {
@@ -119,6 +123,8 @@ function initTimer() {
 }
 
 function resetGame() {
+    //allow typing
+    inpField.disabled = false;
     loadParagraph();
     clearInterval(timer);
     timeLeft = maxTime;
