@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://pyscript.net/alpha/pyscript.css" />
+    <script defer src="https://pyscript.net/alpha/pyscript.js"></script>
+    <link rel="stylesheet" href="y.css">
+</head>
+<body>
+    <div id="progress" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style='--value:75'></div>
+
+    <py-env>
+        - numpy
+        - pandas
+        - scikit-learn  
+        - paths:
+            - ./js/ML.py
+            - ./js/train1.csv
+            - ./js/train2.csv
+            - ./js/train3.csv
+            - ./js/test1.csv
+            - ./js/test2.csv
+    </py-env>
+    <py-script output="Output">
+    from ML import test
+    from js import document
+    msg = document.getElementById("progress")
+    x=test()*100
+    msg.style.setProperty('--value', 73)
+    <p>x</p>
+    </py-script>
+</body>
+</html>
