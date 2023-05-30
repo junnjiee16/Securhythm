@@ -1,4 +1,4 @@
-# Securhythm (CYS YouthxHack 2022)
+# CYS YouthxHack 2022
 
 Team Name: TripleJ
 
